@@ -1,0 +1,22 @@
+server:
+  port: 80
+
+Spring:
+  session:
+    timeout: 18000
+    store-type: none
+    redis:
+      namespace: "spring:session"
+      flush-mode: immediate
+      cleanup-cron: "0 * * * * *"
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/user?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: xly20010322
+  thymeleaf:
+    cache: off
+
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.web.entity

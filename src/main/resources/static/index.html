@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <style type="text/css">
+        .parent{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class = "parent">
+    <div class = "child" style="text-align:center">
+            name:<br>
+            <input id = "username" type="text" name="name"/>
+            <br>
+            password:<br>
+            <input id = "password" type="text" name="password"/>
+            <br>
+            <input type="button" value="login" onclick="login()"/>
+        <p>未注册用户自动注册</p>
+    </div>
+</div>
+</body>
+<script>
+    function login(){
+        var xhttp = new XMLHttpRequest();
+        var name = document.getElementById("username").value
+        var password = document.getElementById("password").value
+        if(name!==""||password!==""){
+            var data = "{\"name\":\""+name+"\",\"password\":\""+password+"\"}"
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    if(this.responseText === "ok"){
+                        window.location.href="/start"
+                    }else{
+                        alert("密码不正确");
+                    }
+                }
+            };
+            xhttp.open("POST", "/login", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(data);
+        }else{
+            alert("账号密码不能为空");
+        }
+    }
+
+</script>
+</html>

@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0">
+<title>HTML5手机端2048网页小游戏代码</title>
+
+<link rel="stylesheet" href="css/reset.min.css">
+<link rel="stylesheet" href="css/style.css">
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 14px;
+			color: #222222;
+		}
+		#box{
+			width: 600px;
+			margin: 20px auto;
+			text-align: center;
+		}
+		#content{
+			background-color: #F8FFE5;
+			border-radius: 8px;
+			box-shadow: 1px 1px 1px #ccc;
+			border:1px solid #EEEEEE;
+		}
+		h4{
+			font-size: 16px;
+		}
+		h4,p{
+			padding: 10px 0;
+		}
+		#btn{
+			width: 80px;
+		}
+		#spread{
+			height: 0px;
+			overflow: hidden;
+		}
+	</style>
+
+</head>
+<body>
+
+<header>
+	<div class="container">
+		<h1><span>2</span><span>0</span><span>4</span><span>8</span></h1>
+		<p class="inspired">by the原2048的灵感。</p>
+	</div>
+</header>
+
+
+<div class="container">
+	<div id="box">
+		<div id="content">
+			<h4>前10排行榜</h4>
+			<div id="spread">
+				<p id="p1">Admin 1000000</p>
+				<p id="p2">Admin 1000000</p>
+				<p id="p3">Admin 1000000</p>
+				<p id="p4">Admin 1000000</p>
+				<p id="p5">Admin 1000000</p>
+				<p id="p6">Admin 1000000</p>
+				<p id="p7">Admin 1000000</p>
+				<p id="p8">Admin 1000000</p>
+				<p id="p9">Admin 1000000</p>
+				<p id="p10">Admin 1000000</p>
+			</div>
+		</div>
+		<button id="btn">展开</button>
+	</div>
+	<div class="directions">
+		<p><strong>如何玩：</strong> 使用你的箭头键移动瓷砖。当两个瓦片相互滑动时，它们合并成一个！</p>
+	</div>
+	<div class="scores">
+		<div class="score-container best-score">
+			最佳: 
+			<div class="score">
+				<div id="bestScore">0</div>
+			</div>
+		</div>
+		<div class="score-container">
+			分数: 
+			<div class="score">
+				<div id="score">0</div>
+				<div class="add" id="add"></div>
+			</div>
+		</div>
+	</div>
+	<div class="game">
+		<div id="tile-container" class="tile-container"></div>
+		<div class="end" id="end">游戏结束<div class="monkey"></div><button class="btn not-recommended__item js-restart-btn" id="try-again">确定并上传分数</button></div>
+	</div>
+
+	<div class="not-recommended">
+		<button class="btn not-recommended__item js-restart-btn" id="restart">提交分数并重启</button>
+	</div>
+</div>
+<script src="js/index.js"></script>
+<script>
+	/*获得btn*/
+	var btn = document.getElementById('btn')
+	var spread = document.getElementById('spread')
+	var iSpread = false
+	/*高度*/
+	var height = spread.scrollHeight
+	/*总时间*/
+	var time = 420;
+	/*间隔*/
+	var interval = 8.4
+	/*速度*/
+	var speed = height/(time/interval)
+	/*点击事件*/
+	btn.onclick = function (e) {
+		btn.disabled = 'disabled'
+		if(!iSpread){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function () {
+				if (this.readyState === 4 && this.status === 200) {
+					var data = window.JSON.parse(this.responseText);
+					var i;
+					for(i = 0;i<10;i++){
+						document.getElementById("p"+(i+1)).innerText=data.names[i]+" : "+data.scores[i];
+					}
+				}
+			}
+			xhttp.open("GET", "/getBestPlayers", false);
+			xhttp.send();
+			var speeds = 0
+			var timer = setInterval(function () {
+				speeds += speed
+				spread.style.height = speeds + 'px'
+
+				if(parseInt(spread.style.height) >=height){
+					clearTimeout(timer)
+					btn.disabled = ''
+				}
+			},interval)
+			this.innerHTML = '收起'
+		}else {
+			var speeds = height
+			this.innerHTML = '展开'
+			var timer = setInterval(function () {
+				speeds -= speed
+				spread.style.height = speeds + 'px'
+				if(speeds <= 0){
+					clearTimeout(timer)
+					btn.disabled = ''
+				}
+			},interval)
+		}
+		iSpread = !iSpread
+	}
+
+</script>
+
+</body>
+</html>
+
